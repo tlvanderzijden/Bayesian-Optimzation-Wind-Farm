@@ -24,7 +24,7 @@ varExperiment = FLORIS_two_dimensional;
 typeOfTest = varExperiment.typeOfTest; %Sample Function, Wind Tunnel or FLORIS
 % We define variables for the script.
 nRuns = 1; % This is the number of full runs we do for every acquisition function. In the end we average over all the results.
-nInputs = 10;% This is the number of try-out inputs every acquisition function can try during a full run.
+nInputs = 30;% This is the number of try-out inputs every acquisition function can try during a full run.
 nInitialPoints = 4; %This is the number of random chosen measurement points, before continuing to BO
 %rng(7, 'twister'); 
 
@@ -47,11 +47,11 @@ useHyperPrior = 1;
 resetHyp = 0; 
 
 % Options for plotting
-displayPlots = 0; % Do we want to get plots from the script results?
+displayPlots = 1; % Do we want to get plots from the script results?
 plotHypOverTime = 0; %Do we want to plot change of the hyperparameters during the runs;
 plotInstant = 0; %Do we want to display the plot while running the script or at the end of the script?
 plotConfPlanes = 'on'; %Do we want to plot the confidence planes for 2-input experiments?  
-typeOfPlot = 'surface'; %Do we want to plot surface or contour plot for 2-input experiments?
+typeOfPlot = 'contour'; %Do we want to plot surface or contour plot for 2-input experiments?
 showProgress = 1; %Do we want to show the progress of the Bayesian Optimization? 
 options = optimset('Display','off'); %Do we want to show the progress of optimizing the acquisition function? 
 color = addcolours; % We define colors.
@@ -93,7 +93,7 @@ if strcmp(typeOfLengthScale, 'iso') && OpHypAlgo == 2
     error('You are using an isotropic length-scale together with the tuneHyperparmameter function. This is not possible (yet). Use minimize function instead')
 end
 %covfunc = {strcat('covSE', typeOfLengthScale)}; 
-covfunc = {strcat('covMatern', typeOfLengthScale),3}; 
+covfunc = {strcat('covMatern', typeOfLengthScale),5}; 
 meanfunc = @meanZero;
 %meanfunc = {@meanConst};
 likfunc = @likGauss; 
@@ -233,7 +233,7 @@ sf = zeros(nInputs, nAF, nRuns); % These are the function values at these measur
 sPower = zeros(nInputs, nAF, nRuns); % These are the measured function values (with measurement noise).
 sPowerNoiseFree = zeros(nInputs, nAF, nRuns); % These are the measured function values (without measurement noise).
 sRecommendations = zeros(nTurbines, nInputs, nAF, nRuns); % These are the recommendations of the optimal yaws made at the end of all the measurements.
-sRecommendationValue = zeros(nInputs, nAF, nRuns); % These are the values at the given recommendation points (if a sample function is used)
+sRecommendationValue = zeros(nInputs-nInitialPoints, nAF, nRuns); % These are the values at the given recommendation points (if a sample function is used)
 sRecommendationBelievedValue = zeros(nInputs, nAF, nRuns); %These are the powers which the GP beliefs we would get at the recommended yaw angels. 
 sLx = zeros(nInputs, nYawInput, nAF, nRuns); 
 sLf = zeros(nInputs, nAF, nRuns); 
@@ -294,6 +294,7 @@ for run = 1:nRuns
         fprintf('%16.4f | %8.4f | %13f | \n', nlml, power0(init,:, run), toc);
     end
     fprintf('\n'); 
+    
 	for iAF = 1:nAF %loop through AF's which are switched on
         if strcmp(typeOfTest, 'Windtunnel') || showProgress == 1
             fprintf('%10s %10s %10s %10s %7s %7s %10s %10s %10s %24s %18s %10s %15s \n','Iteration','Yaw_1', 'Yaw_2', 'Yaw_3', 'lx_1', 'lx_2', 'lf', 'sn', 'AF hyperparameter', 'Initialization/BO','Hyp Likelihood','Power','Time Passed');
@@ -304,6 +305,7 @@ for run = 1:nRuns
         hyp.gp.cov= log([lxNoLog; lfNoLog]);
         hyp.gp.lik = log(snNoLog);
         hyp.acq = allAF(iAF,2); 
+        
         % We implement the first random measurements that we have already done, and the hyperparameters which are not optimized in the initialization fase
         sYaw(:, 1:nInitialPoints, iAF, run) = randomYaw(:,:,run);
 		sPower(1:nInitialPoints, iAF, run) = power0(:,:,run); 
@@ -326,7 +328,21 @@ for run = 1:nRuns
 		sRecommendations(1:nYawInput, 1, iAF, run) = yawOpt; %input first measurement
 		sRecommendationBelievedValue(1, iAF, run) = powerOpt; %output of AF 
 		if strcmp(typeOfTest, 'Sample Function'), sRecommendationValue(1, iAF, run) = OptimizationFunction(yawOpt); end %output of first measurement
-        
+        if  strcmp(typeOfTest, 'FLORIS') 
+                if yawInRad == 1
+                    florisRunner.controlSet.yawAngleIFArray = [yawOpt, 0];
+                else
+                    florisRunner.controlSet.yawAngleIFArray = deg2rad([yawOpt, 0]);
+                end
+                florisRunner = floris(layout, controlSet, subModels);
+                florisRunner.run
+                f = zeros(1,florisRunner.layout.nTurbs);
+                for k = 1:florisRunner.layout.nTurbs
+                    f(k) = florisRunner.turbineResults(k).power*1e-06; 
+                end
+                sRecommendationValue(1, iAF, run) = sum(f);
+        end
+            
         %random measurements incorporated. Now switch to BO and loop through the input points. We start after the initial points. 
 		for i = nInitialPoints+1:nInputs 
             %Optimizing hyperparameters
@@ -419,7 +435,8 @@ for run = 1:nRuns
             yawM = sYaw(1:nYawInput, 1:i ,iAF,run)'; %measurements we did so far
             powerM = sPower(1:i, iAF,run); %output of measurements
             
-            %We let the algorithm make a recommendation of the input, based on all data so far. This is equal to the highest mean. We use this to calculate the instantaneous regret.
+            %We let the algorithm make a recommendation of the input, based on all data so far. This is equal to the highest mean. 
+            %We use this to calculate the instantaneous regret.
             if optimizationAlgo == 1
                 [yawOpt, powerOpt] = optimizeAcquisitionFunction(@(x)acqEV(hyp,@infGaussLik, meanfunc, covfunc,likfunc,yawM,powerM,x),xMin , xMax, nStarts);
             else
@@ -431,7 +448,23 @@ for run = 1:nRuns
             %add recommendations of maximum yaw and power to all recommendations
             sRecommendations(1:nYawInput, i, iAF, run) = yawOpt;
             sRecommendationBelievedValue(i, iAF, run) = powerOpt;
-            if strcmp(typeOfTest, 'Sample Function'), sRecommendationValue(i, iAF, run) = OptimizationFunction(yawOpt); end
+            if strcmp(typeOfTest, 'Sample Function') 
+                sRecommendationValue(i, iAF, run) = OptimizationFunction(yawOpt); 
+            end
+            if  strcmp(typeOfTest, 'FLORIS') 
+                if yawInRad == 1
+                    florisRunner.controlSet.yawAngleIFArray = [yawOpt, 0];
+                else
+                    florisRunner.controlSet.yawAngleIFArray = deg2rad([yawOpt, 0]);
+                end
+                florisRunner = floris(layout, controlSet, subModels);
+                florisRunner.run
+                f = zeros(1,florisRunner.layout.nTurbs);
+                for k = 1:florisRunner.layout.nTurbs
+                    f(k) = florisRunner.turbineResults(k).power*1e-06; 
+                end
+                sRecommendationValue(i, iAF, run) = sum(f);
+            end
         end 
         
         disp('The recommended yaws are:');
@@ -459,20 +492,7 @@ for run = 1:nRuns
             disp(['The power improvement for this yaw is: ',num2str(powerImprovementPercentage),'%'])
         end
         
-        %% Load SOWFA Data
-            %Make sure you run the first six sections
-            if strcmp(typeOfTest, 'SOWFA')
-            iAF =1; run =1; 
-            %load('C:\Users\TUDelft SID\Google Drive\BEP\Code (1)\Matlab\Variable files\out_varBO_19_12.mat');
-            nInputs = varBO.iteration; 
-            sYaw = varBO.sYaw(1:nYawInput, 1:nInputs); 
-            sPower = varBO.sPower(1:nInputs);  
-            sLx(:,1) = varBO.sLx(:, 1);
-            sLx(:,2) = varBO.sLx(:, 2);
-            sLf(:) = varBO.sLf(:);
-            sSn(:) = varBO.sSn(:);
-            end 
-        
+       
         %% If desired, we also generate a plot of the result.
 		if displayPlots ~= 0
             plotTimeStep = nInputs;
@@ -486,33 +506,13 @@ for run = 1:nRuns
             hyp.gp.cov(3) = log(sLf(plotTimeStep+1));
             hyp.gp.lik = log(sSn(nInputs+1));
             % We start by displaying the Gaussian process resulting from the measurements. We make the calculations for the trial points.
-            if plotHypOverTime == 1
-                xHyp = (1:nInputs)';
-                figure
-                grid on
-                plot(xHyp, sSn(:,iAF,run), '-', 'Color', color.black);
-                title('sn over time')
-                figure
-                hold on
-                grid on
-                plot(xHyp, sLx(:,iAF,run), '-', 'Color', color.blue);
-                title('lx over time')
-                figure
-                hold on
-                grid on
-                plot(xHyp, sLf(:,iAF,run), '-', 'Color', color.red);
-                title('lf over time')
-            end
             
-            %allYaw = sYaw(1:nYawInput, :,iAF,run)'; %all non zero yaw angels
-            %allPower = sPower(:,iAF,run); %all power measurements
             [mPost ,s2Post] = gp(hyp.gp, inffunc, meanfunc, covfunc, likfunc, sYaw(1:nYawInput, 1:plotTimeStep ,iAF,run)' ,sPower(1:plotTimeStep,iAF,run), Xs');
             sPost = sqrt(s2Post);
             if nYawInput ~= 1 %Do we have more then one yaw input?
                 mPost = reshape(mPost, size(x1Mesh));
                 sPost = reshape(sPost, nsPerDimension, nsPerDimension); % We put the result in a square format again.
             end
-            
             
             %% We plot the resulting Gaussian process.
 			if nYawInput == 1 %If we are using one yaw input
@@ -744,27 +744,29 @@ if strcmp(typeOfTest, 'Sample Function') || strcmp(typeOfTest, 'FLORIS')
                     export_fig(fullfile(folderName,'CumulativeRegret.png'),'-transparent');
     end
     
-%     % We make a plot of the error over time.
-%     figure;
-%     %clf(2);
-%     hold on;
-%     grid on;
-%     for i = 1:nAF
-%         plot(0:nInputs, [powerOptTrue - mean(fs); meanError(:,i)], '-', 'Color', colors(i,:));
-%     end
-%     xlabel('Measurement number');
-%     ylabel('Recommendation error over time');
-%     legend(afNameShort(acqSwitchedOn(1,:)),'Location','NorthEast');
-%     % axis([0,nInputs,0,0.5]);
-%     if  saveData == 1
-%         export_fig(fullfile(folderName,'RecommendationError.png'),'-transparent');
-%     end
-%     
-%     % We display the error in the final recommendations.
-%     disp(['The true power maximum is: ',num2str(powerOptTrue),'The yaws are: '])
-%     disp(yawOptTrue); 
-%     disp('The average final recommendation errors were:');
-%     disp(meanError(end,:)); 
+    % We make a plot of the error over time.
+    figure;
+    %clf(2);
+    hold on;
+    grid on;
+    if strcmp(typeOfTest, 'FLORIS'), startError = mean(sPower, 'all'); end
+    if strcmp(typeOfTest, 'Sample Function'), startError = mean(fs); end
+    for i = 1:nAF
+        plot(nInitialPoints+1:nInputs, meanError(nInitialPoints+1:nInputs,i), '-', 'DisplayName', [afNameShort{allAF(i,1)},' hyp: ', num2str(allAF(i, 2))]);
+    end
+    xlabel('Measurement number');
+    ylabel('Recommendation error over time');
+    legend
+    % axis([0,nInputs,0,0.5]);
+    if  saveData == 1
+        export_fig(fullfile(folderName,'RecommendationError.png'),'-transparent');
+    end
+    
+    % We display the error in the final recommendations.
+    disp(['The true power maximum is: ',num2str(powerOptTrue),'The yaws are: '])
+    disp(yawOptTrue); 
+    disp('The average final recommendation errors were:');
+    disp(meanError(end,:)); 
     
     
 end
