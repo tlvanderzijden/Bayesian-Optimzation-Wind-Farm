@@ -41,4 +41,4 @@ Add additional notes about how to deploy this on a live system
 
 ## Acknowledgments
 Supervisor: prof.dr.ir. J.W. van Wingerden, dr. ir. M. Kok, ir. B.M. Doekemeijer, ir. D.C. van
-der Hoek
+der Hoek. Delft University of Technology, Delft Center for Systems and Control. 
