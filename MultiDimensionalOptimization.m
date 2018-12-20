@@ -468,10 +468,8 @@ for run = 1:nRuns
                 zlabel('Power Output'); 
                 title([afNameShort{allAF(iAF,1)} ' Gaussian Process Plot, run: ', num2str(run)]); %set y-label to name of corresponding acquisition function
                 
-                makeGPPlotMultidimensional(x1Mesh, x2Mesh, mPost, sPost, sYaw(1:nYawInput,1:plotTimeStep,iAF, run)', sPower(1:plotTimeStep, iAF,run),plotConfPlanes, 'contour'); 
-                %axis([xMin(1),xMax(1),xMin(2),xMax(2),-350,100]);
-                axis auto
-                view([20,25]); %viewpoint specification
+                makeGPPlotMultidimensional(x1Mesh, x2Mesh, mPost, sPost, sYaw(1:nYawInput,1:plotTimeStep,iAF, run)', sPower(1:plotTimeStep, iAF,run),plotConfPlanes, typeOfPlot); 
+             
                 if strcmp(typeOfTest, 'Windtunnel') || saveData == 1
                     %export_fig(fullfile(folderName,'GP.png'),'-transparent');
                     fileName = strcat('GP_',num2str(afNameShort{acqSwitchedOn(1,iAF)}),'_run_',num2str(run),'.fig'); 
