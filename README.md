@@ -2,7 +2,6 @@
 This code belongs to the Bachelor Thesis: [A data-driven approach for wind farm power maximisation
 using Bayesian Optimisation](Paper.pdf)
       
-
 ## Research
 The objective of this research is to show that the power output of a scaled wind farm can be optimised, using a model
 free optimisation algorithm. Traditionally, wind turbines are controlled to optimise their individual power production.
