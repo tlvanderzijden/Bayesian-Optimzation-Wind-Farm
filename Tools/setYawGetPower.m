@@ -22,7 +22,7 @@
  fprintf(arduinoSerial, servalue);                   
     
  %waiting for the wind to settle
- pause(8);
+ pause(7.5);
     
     %Get RPMs
     RPMs = fscanf(arduinoSerial);            % reading what is in the serial
@@ -48,8 +48,8 @@
     measuredCurrents = measuredCurrents ./ 1000000;
     
     KT=3.52E-3; %Nm A^-1
-    Power1 = measuredCurrents(1) * KT * RPMs(1);
-    Power2 = measuredCurrents(2) * KT * RPMs(2);
-    Power3 = measuredCurrents(3) * KT * RPMs(3);
+    Power1 = measuredCurrents(1) * KT * RPMs(1) *pi/30;
+    Power2 = measuredCurrents(2) * KT * RPMs(2) *pi/30;
+    Power3 = measuredCurrents(3) * KT * RPMs(3) *pi/30;
     totalPower = Power1 + Power2 + Power3;
  end

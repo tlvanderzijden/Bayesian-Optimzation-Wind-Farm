@@ -9,21 +9,22 @@ v.xMinrad = deg2rad(v.xMin);
 v.xMaxrad = deg2rad(v.xMax);
 v.displayName = 'Windtunnel two yaw input';
 v.typeOfTest = 'Windtunnel';
-v.nsPerd = 51; 
+v.nsPerDimension = 31; 
+v.ns = v.nsPerDimension^2; 
 
 %load(strcat(dir,'\Variable files\hyperparameters_from_grid_one_input'))
-v.lf = 0.04; % This is the output length scale. (1 optimized) (0.5 silly)
-v.lx = [18.5; 0.2]; % This is the input length scale. (0.6 optimized) (5 silly)
-v.sn = 3e-3;
+v.lf = 0.1; % This is the output length scale. (1 optimized) (0.5 silly)
+v.lx = [20; 20]; % This is the input length scale. (0.6 optimized) (5 silly)
+v.sn = 0.1;
 v.sfh = 0.3; %This is the standard deviation of the noise, noise variance (sigma_n) (0.3 optimized)(0.1 silly)
  
 %structure for Rasmussen toolbox
 v.hyp.gp.cov= log([v.lx; v.lf]); 
 v.hyp.gp.lik = log(v.sn);
 v.hyp.gp.mean = []; 
-v.hyp.acq.kappa = 5; 
-v.hyp.acq.xiPI = 0.1;
-v.hyp.acq.xiEI = 0.1; 
+v.hyp.Acq.UCB =  [3]; % column vector 
+v.hyp.Acq.PI = []; 
+v.hyp.Acq.EI = [];
 
 testVariables = v; 
 end

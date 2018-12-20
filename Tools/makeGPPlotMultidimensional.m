@@ -50,7 +50,8 @@ else % plot contour
               'MarkerFaceColor',[1 1 1],...
               'LineWidth',1.5); 
     %set(s, 'LinedWidth', 1, 'FaceColor', [ 1 1 1] , 'MarkerEdgeColor', [ 0 0 0 ]); 
-    axis([-40, 40, -40, 40]); 
+    axis([x1Mesh(1,1), x1Mesh(1,end), x2Mesh(1,1), x2Mesh(end,1)]); 
+    colorbar
     subplot(1,2,2)
     contourf(x1Mesh, x2Mesh,sPost);  
     hold on; 
@@ -59,7 +60,7 @@ else % plot contour
               'LineWidth',1.5); 
 %    colormap default; 
     colorbar
-    axis([-40, 40, -40, 40]); 
+     axis([x1Mesh(1,1), x1Mesh(1,end), x2Mesh(1,1), x2Mesh(end,1)]); 
 end
 end
 

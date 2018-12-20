@@ -6,7 +6,7 @@
  fprintf(arduinoSerial, servalue);                   
     
  %waiting for the wind to settle
- pause(8);
+ pause(7.5);
     
     %get RPMs
     RPMs = fscanf(arduinoSerial);            % reading what is in the serial

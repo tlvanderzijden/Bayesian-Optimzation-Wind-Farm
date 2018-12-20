@@ -18,15 +18,15 @@ addpath(genpath('Tools'));
 addpath('Models'); 
 
 %The experiment variables are defined in a function. See folder 'Models' for different models/experiments
-varExperiment = FLORIS_two_dimensional;
+%varExperiment = FLORIS_two_dimensional;
 %varExperiment = Sample_function_two_dimensional;
-%varExperiment = SOWFA_two_dimensional; 
+varExperiment = Windtunnel_two_dimensional;
 
 % what kind of test are we doing? 
 typeOfTest = varExperiment.typeOfTest; %Sample Function, Wind Tunnel or FLORIS
 % We define variables for the script.
 nRuns = 1; % This is the number of full runs we do for every acquisition function. In the end we average over all the results.
-nInputs = 30;% This is the number of try-out inputs every acquisition function can try during a full run.
+nInputs = 50;% This is the number of try-out inputs every acquisition function can try during a full run.
 nInitialPoints = 4; %This is the number of random chosen measurement points, before continuing to BO
 %rng(7, 'twister'); 
 
@@ -37,7 +37,7 @@ turbine1 = 1; %identical numbers of windturbines
 turbine2 = 2;
 turbine3 = 3; 
 yawInRad = 0; %Compute yaw angles in degrees or rads. 
-saveData = 0; %Do we want to save the data and figures, wind tunnel test are always saved
+
 
 %Options for the optimization
 optimizeHyperparameters = 1; %Do we want to tune hyperparameters
@@ -46,7 +46,7 @@ nStarts = 3; % When we are optimizing with the multi-start algorithm this is the
 useHyperPrior = 1; 
 resetHyp = 0; 
 
-% Options for plotting
+% Options for plotting and data saving
 displayPlots = 1; % Do we want to get plots from the script results?
 plotHypOverTime = 0; %Do we want to plot change of the hyperparameters during the runs;
 plotInstant = 0; %Do we want to display the plot while running the script or at the end of the script?
@@ -55,6 +55,7 @@ typeOfPlot = 'contour'; %Do we want to plot surface or contour plot for 2-input 
 showProgress = 1; %Do we want to show the progress of the Bayesian Optimization? 
 options = optimset('Display','off'); %Do we want to show the progress of optimizing the acquisition function? 
 color = addcolours; % We define colors.
+saveData = 1; %Do we want to save the data and figures, wind tunnel test are always saved
 
 %Maximum distribution options
 maxDistribution = 0; %Do we want to compute the maximum distribution and plot it?
@@ -65,7 +66,7 @@ probabilityInterval = 0.95;
 %% Kernel, mean, likelihood
 %here a different kernel can be specified
 %covfunc = {@covSEard};  
-covfunc = { 'covMaternard',5}; 
+covfunc = { 'covMaternard',3}; 
 meanfunc = @meanZero;
 %meanfunc = {@meanConst};
 likfunc = @likGauss; 
@@ -422,15 +423,13 @@ for run = 1:nRuns
             hyp.gp.cov(1) = log(sLx(plotTimeStep+1, 1));
             hyp.gp.cov(2) = log(sLx(plotTimeStep+1, 2));
             hyp.gp.cov(3) = log(sLf(plotTimeStep+1));
-            hyp.gp.lik = log(sSn(nInputs+1));
+            hyp.gp.lik = log(sSn(plotTimeStep+1));
             % We start by displaying the Gaussian process resulting from the measurements. We make the calculations for the trial points.
             
             [mPost ,s2Post] = gp(hyp.gp, inffunc, meanfunc, covfunc, likfunc, sYaw(1:nYawInput, 1:plotTimeStep ,iAF,run)' ,sPower(1:plotTimeStep,iAF,run), Xs');
             sPost = sqrt(s2Post);
-            if nYawInput ~= 1 %Do we have more then one yaw input?
-                mPost = reshape(mPost, size(x1Mesh));
-                sPost = reshape(sPost, nsPerDimension, nsPerDimension); % We put the result in a square format again.
-            end
+            mPost = reshape(mPost, size(x1Mesh));
+            sPost = reshape(sPost, nsPerDimension, nsPerDimension); % We put the result in a square format again.
             
             %% We plot the resulting Gaussian process.
                 if strcmp(typeOfTest, 'Sample Function') && iAF == 1 && run == 1
