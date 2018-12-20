@@ -1,4 +1,4 @@
-# Thesis Bayesian Optimzation Wind Farms
+#A data-driven approach for wind farm power maximisation using Bayesian Optimisation
 This code belongs to the Bachelor Thesis: [A data-driven approach for wind farm power maximisation
 using Bayesian Optimisation](Paper.pdf)
       
