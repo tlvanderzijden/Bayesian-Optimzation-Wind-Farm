@@ -1,9 +1,11 @@
 function SPost = postCovMatrix(hypcov, covfunc, xm, xs,sfh)
+    %This function is used to calculate the posterior covariance matrix
+    %hypcov: hyperparameters of [lx; lf]
+    %covfucn: covariance function
     %xm: measurement points: Dxn matrix 
     %xs: input points: Dxn matrix
-    lx = hypcov(1); % This is the input length scale.
-    lf = hypcov(2);  % This is the output length scale.
-    
+    %sfh: noise
+   
     X = [xm,xs]';
     ns = size(xs,2);
     nm = size(xm,2);
