@@ -1,7 +1,13 @@
 # Thesis Bayesian Optimzation Wind Farms
-# Project Title
-
-One Paragraph of project description goes here
+The objective of this research is to show that the power output of a scaled wind farm can be optimised, using a model
+free optimisation algorithm. Traditionally, wind turbines are controlled to optimise their individual power production.
+The result of this is that the first turbine has a high power output while the downstream turbines experience turbulent
+wind, resulting in lower power as well as higher damage. A way to optimise the power production of the entire wind
+farm is by misaligning some of the turbines in the yaw direction, thereby steering the turbulent wake away from
+downstream turbines. Finding the right yaw angle, however, is time and energy consuming. In this study, Gaussian
+processes combined with Bayesian Optimisation have been used to approach the maximum power production of a
+scaled wind farm in as few measurements as possible. The scaled wind farm is used because measurements that would
+be time or energy consuming on respectively a high fidelity simulation or an actual wind farm can be taken here.
 
 ## Getting Started
 
