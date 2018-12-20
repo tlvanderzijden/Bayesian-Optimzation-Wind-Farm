@@ -4,7 +4,6 @@
 % Sample function: output of measurement point is sampled from a function (Branin)
 % Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured
 % FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model
-% First and second section are used to set settings for the experiment
 
 % We set up the workspace, ready for executing scripts.
 clear all; % Empty the workspace.
@@ -62,21 +61,6 @@ nRounds = 20; % We define the number of rounds for particle maximum distribution
 nParticles = 1e4; % We define the number of particles used.
 probabilityInterval = 0.95; 
 
-%% Kernel, mean, likelihood
-%here a different kernel can be specified
-%covfunc = {@covSEard};  
-covfunc = { 'covMaternard',5}; 
-meanfunc = @meanZero;
-%meanfunc = {@meanConst};
-likfunc = @likGauss; 
-inffunc = @infGaussLik; 
-
-if useHyperPrior == 1
-    mu = 3; s2 = 0.5^2;
-    pg = {@priorGauss,mu,s2};
-    prior.cov= {pg;  pg; pg};
-    inffunc = {@infPrior,@infGaussLik,prior};
-end
 %% Define minimum and maximum space for different types of experiments 
 if yawInRad == 0
     xMin = varExperiment.xMin;
@@ -94,6 +78,21 @@ x2Range = linspace(xMin(2),xMax(2),nsPerDimension); % These are the plot points 
 [x1Mesh,x2Mesh] = meshgrid(x1Range,x2Range); % We turn the plot points into a grid.
 Xs = [reshape(x1Mesh,1,ns);reshape(x2Mesh,1,ns)]; % These are the trial points used for generating plot data.
 
+%% Kernel, mean, likelihood
+%here a different kernel can be specified
+%covfunc = {@covSEard};  
+covfunc = { 'covMaternard',5}; 
+meanfunc = @meanZero;
+%meanfunc = {@meanConst};
+likfunc = @likGauss; 
+inffunc = @infGaussLik; 
+
+if useHyperPrior == 1
+    mu = 3; s2 = 0.5^2;
+    pg = {@priorGauss,mu,s2};
+    prior.cov= {pg;  pg; pg};
+    inffunc = {@infPrior,@infGaussLik,prior};
+end
 %% We set up the hyperparameters which are stored in the model
 hypStart = varExperiment.hyp; %Hyperparameters are imported from the model in log form. 
 hyp = hypStart; 
