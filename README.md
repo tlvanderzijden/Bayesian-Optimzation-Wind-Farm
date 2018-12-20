@@ -11,7 +11,7 @@ farm is by misaligning some of the turbines in the yaw direction, thereby steeri
 downstream turbines. In this study, Gaussian processes combined with Bayesian Optimisation have been used to approach the maximum power production of a scaled wind farm in as few measurements as possible. 
 
 ## Running the tests
-[MultiDimensionalOptimization](MultiDimensionalOptimization.m) is the main script. Different optimization experiments can be executed with this script:
+[MultiDimensionalOptimization](MultiDimensionalOptimization.m) is the main script. It uses Bayesian Optimization and Gaussian Processes to find  the maximum a non convex function. Different optimization experiments can be executed with this script:
 <li>Sample function: output of measurement point is sampled from a function (Branin)</li>
 <li>Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured</li>
 <li>FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model.</li>
