@@ -16,7 +16,7 @@ downstream turbines. In this study, Gaussian processes combined with Bayesian Op
 <li>Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured</li>
 <li>FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model.</li>
 
-The variable `varExperiment` imports the experiment variables which are defined in a function. See folder 'Models' for different models/experiments. 
+The variable `varExperiment` in MultiDimensionalOptimization imports the experiment variables which are defined in a function. See folder 'Models' for different models/experiments. 
 
 ### Gaussian Processes and Bayesian Optimization 
 More information about Gaussian Processes can be find in:<br>
