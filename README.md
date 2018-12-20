@@ -44,7 +44,7 @@ Add additional notes about how to deploy this on a live system
 * **T.L. van der Zijden**
 ## License
 
-This project is licensed under the MIT License - see the [MultiDimensionalOptimization.m](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [MultiDimensionalOptimization.m](MultiDimensionalOptimization.m) file for details
 
 ## Acknowledgments
 
