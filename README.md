@@ -11,12 +11,13 @@ wind, resulting in lower power as well as higher damage. A way to optimise the p
 farm is by misaligning some of the turbines in the yaw direction, thereby steering the turbulent wake away from
 downstream turbines. In this study, Gaussian processes combined with Bayesian Optimisation have been used to approach the maximum power production of a scaled wind farm in as few measurements as possible. 
 
-## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ## Running the tests
+Different tests can be executed:
+*Sample function: output of measurement point is sampled from a function (Branin)
+*Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured
+*FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model.
+```varExperiment``` 
 
-Explain how to run the automated tests for this system
 
 ### Break down into end to end tests
 
