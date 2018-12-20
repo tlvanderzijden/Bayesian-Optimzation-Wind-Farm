@@ -38,12 +38,7 @@ Add additional notes about how to deploy this on a live system
 * **K.O. Koerten**
 * **J. Langeveld**
 * **T.L. van der Zijden**
-## License
-
-This project is licensed under the MIT License - see the [MultiDimensionalOptimization.m](MultiDimensionalOptimization.m) file for details
 
 ## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Supervisor: prof.dr.ir. J.W. van Wingerden, dr. ir. M. Kok, ir. B.M. Doekemeijer, ir. D.C. van
+der Hoek
