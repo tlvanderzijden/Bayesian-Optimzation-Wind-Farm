@@ -72,28 +72,20 @@ else
 end
 
 %% Define trial point mesh
-if nYawInput == 1
-    ns = varExperiment.ns;
-    Xs = linspace(xMin, xMax, ns); % These are the trial points used for plots.
-else
-    ns = varExperiment.ns;
-    nsPerDimension = varExperiment.nsPerDimension; 
-    x1Range = linspace(xMin(1),xMax(1),nsPerDimension); % These are the plot points in the dimension of x1.
-    x2Range = linspace(xMin(2),xMax(2),nsPerDimension); % These are the plot points in the dimension of x2.
-    [x1Mesh,x2Mesh] = meshgrid(x1Range,x2Range); % We turn the plot points into a grid.
-    Xs = [reshape(x1Mesh,1,ns);reshape(x2Mesh,1,ns)]; % These are the trial points used for generating plot data.
-end
+ns = varExperiment.ns;
+nsPerDimension = varExperiment.nsPerDimension;
+x1Range = linspace(xMin(1),xMax(1),nsPerDimension); % These are the plot points in the dimension of x1.
+x2Range = linspace(xMin(2),xMax(2),nsPerDimension); % These are the plot points in the dimension of x2.
+[x1Mesh,x2Mesh] = meshgrid(x1Range,x2Range); % We turn the plot points into a grid.
+Xs = [reshape(x1Mesh,1,ns);reshape(x2Mesh,1,ns)]; % These are the trial points used for generating plot data.
 
 %% Kernel, mean, likelihood
 %here a different kernel can be specified
 %covfunc = {'covMaterniso',3};
 %covfunc = {@covSEiso}; 
 typeOfLengthScale = 'ard'; %iso or ard
-if strcmp(typeOfLengthScale, 'iso') && OpHypAlgo == 2
-    error('You are using an isotropic length-scale together with the tuneHyperparmameter function. This is not possible (yet). Use minimize function instead')
-end
 %covfunc = {strcat('covSE', typeOfLengthScale)}; 
-covfunc = {strcat('covMatern', typeOfLengthScale),5}; 
+covfunc = { 'covMaternard',5}; 
 meanfunc = @meanZero;
 %meanfunc = {@meanConst};
 likfunc = @likGauss; 
@@ -563,11 +555,6 @@ for run = 1:nRuns
                     fileName = strcat('GPandACQ_',num2str(afNameShort{allAF(iAF,1)}),'_run_',num2str(run),'.fig'); 
                     savefig(fullfile(folderName,fileName));
                 end
-                
-                %What would be the next step?
-                % yawOpt = patternsearch(@(x)(-AF(x)), initialYaw1 ,[],[],[],[],xMin,xMax);
-                %0afMax = AF(yawOpt); 
-                %plot(yawOpt,afMax, 'rx+');
                 
                 if maxDistribution == 1 %an experiment with max distribution
                     % We set up a Gaussian process to approximate the measurements, giving us the GP for our examples.
