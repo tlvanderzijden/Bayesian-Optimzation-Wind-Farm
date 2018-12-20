@@ -20,13 +20,14 @@ downstream turbines. In this study, Gaussian processes combined with Bayesian Op
 The variable `varExperiment` imports the experiment variables which are defined in a function. See folder 'Models' for different models/experiments
 
 ### Gaussian Processes and Bayesian Optimization 
-More information about Gaussian Processes can be find in:
-[Gaussian Processes for Machine Learning](http://www.gaussianprocess.org/gpml/chapters/RW.pdf) 
+More information about Gaussian Processes can be find in:<br>
+[Gaussian Processes for Machine Learning](http://www.gaussianprocess.org/gpml/chapters/RW.pdf)-Rasmussen, C. E. (2004).<br>
+And for Bayesian Optimization: <br>
 [A Tutorial on Bayesian Optimization of
 Expensive Cost Functions, with Application to
 Active User Modeling and Hierarchical
-Reinforcement Learning
-](https://arxiv.org/pdf/1012.2599.pdf)
+Reinforcement Learning](https://arxiv.org/pdf/1012.2599.pdf)-Brochu, E., Cora, V. M., & De Freitas, N. (2010)<br>
+
 
 ## Deployment
 
