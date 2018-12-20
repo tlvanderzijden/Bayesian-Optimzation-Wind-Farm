@@ -1,6 +1,5 @@
 clear all; 
 clc; 
-dir = 
 addpath(genpath('.\Tools')); 
 
 
