@@ -25,7 +25,9 @@ v.sn = 0.01;
 v.hyp.gp.cov= log([v.lx; v.lf]); 
 v.hyp.gp.lik = log(v.sn);
 v.hyp.gp.mean = [];%log(v.mean); 
-v.hyp.Acq.UCB =  []; % column vector 
+%vector of hyperparameters of the acquisition function that need to be tested
+%multiple acquisition functions can be tested in one run
+v.hyp.Acq.UCB =  []; 
 v.hyp.Acq.PI = []; 
 v.hyp.Acq.EI = [0.01];
 testVariables = v; 
