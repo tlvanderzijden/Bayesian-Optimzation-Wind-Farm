@@ -1,6 +1,6 @@
 # Thesis Bayesian Optimzation Wind Farms
-This is the code belonging to the Bachelor Thesis: 
-[Contribution guidelines for this project](Paper.pdf)
+This code belongs to the Bachelor Thesis: [A data-driven approach for wind farm power maximisation
+using Bayesian Optimisation](Paper.pdf)
       
 
 ## Research
