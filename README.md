@@ -14,8 +14,8 @@ downstream turbines. In this study, Gaussian processes combined with Bayesian Op
 ## Running the tests
 Different tests can be executed:
 <li>Sample function: output of measurement point is sampled from a function (Branin)</li>
-*Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured
-*FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model.
+<li>Windtunnel: test in scaled wind farm as described in thesis. Power output of three wind turbines is measured</li>
+<li>FLORIS: FLORIS is a model to estimate the behaviour of wakes in wind farms. A FLORIS model is defined and the power is sampled from the model.</li>
 ```varExperiment``` 
 
 
