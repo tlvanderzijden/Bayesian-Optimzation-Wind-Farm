@@ -471,7 +471,7 @@ for run = 1:nRuns
              
                 if strcmp(typeOfTest, 'Windtunnel') || saveData == 1
                     %export_fig(fullfile(folderName,'GP.png'),'-transparent');
-                    fileName = strcat('GP_',num2str(afNameShort{acqSwitchedOn(1,iAF)}),'_run_',num2str(run),'.fig'); 
+                    fileName = strcat('GP_',num2str(afNameShort{allAF(iAF,1)}),'_run_',num2str(run),'.fig'); 
                     savefig(fullfile(folderName,fileName));
                 end
                 if plotInstant ==1 
