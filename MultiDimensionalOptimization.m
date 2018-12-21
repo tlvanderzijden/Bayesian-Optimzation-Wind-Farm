@@ -27,7 +27,7 @@ typeOfTest = varExperiment.typeOfTest; %Sample Function, Wind Tunnel or FLORIS
 % We define variables for the script.
 nRuns = 1; % This is the number of full runs we do for every acquisition function. In the end we average over all the results.
 nInputs = 50;% This is the number of try-out inputs every acquisition function can try during a full run.
-nInitialPoints = 4; %This is the number of random chosen measurement points, before continuing to BO
+nInitialPoints = 4; %This is the number of initial points, before continuing to BO. The first 6 are defined in a grid. After that random numbers are chosen
 %rng(7, 'twister'); 
 
 %Options for the windturbines. 
