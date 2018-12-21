@@ -10,7 +10,7 @@ v.typeOfTest = 'SOWFA';
 v.nsPerDimension = 61; 
 v.ns = v.nsPerDimension^2; 
 
-v.propGP.covfunc = {'covSEard'};
+v.propGP.covfunc = {'covMaternard', 3};
 v.propGP.meanfunc = @meanZero;
 v.propGP.likfunc = @likGauss;
 v.propGP.inf = @infGaussLik; 

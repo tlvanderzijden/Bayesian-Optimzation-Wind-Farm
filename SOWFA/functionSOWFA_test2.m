@@ -5,7 +5,7 @@ xMax = varExperiment.xMax;
 nYawInput = 2; % This is the dimension of the input vector.r i = 3:401
 nTurbines = 3; %Number of windturbines that can be controlled
 nInitialPoints = 4; 
-nInputs = 50;
+nInputs = 20;
 nStarts = 3;
 % We define settings for the script.
 if any(strcmp(fieldnames(varBO),'iteration'))
@@ -50,7 +50,8 @@ else
 end
 
 %We set up other acquisition function settings. These have been tuned manually.
-hypacq = varExperiment.hyp.Acq.EI;  
+hypacq = varExperiment.hyp.Acq.EI; 
+varBO.hypacq = varExperiment.hyp.Acq.EI; 
 hyp.acq= hypacq;
 
 %% Kernel, mean, likelihood
@@ -86,8 +87,7 @@ if iteration <= nInitialPoints
 
         % We let the algorithm make a recommendation of the input, based on all data so far. This is equal to the highest mean.
         AFev = @(x)acqEV(hyp,@infGaussLik, meanfunc, covfunc,likfunc, sYaw,sPower,x);
-        [yawOpt] = patternsearch(@(x)(-AFev(x)), (xMin + 0.5*(xMax-xMin))' ,[],[],[],[], xMin ,xMax, [],options);
-        powerOpt = AFev(yawOpt);
+        [yawOpt, powerOpt] = optimizeAcquisitionFunction(AFev, xMin, xMax, nStarts);
         varBO.sRecommendations(1:nYawInput,iteration-1) = yawOpt;
         varBO.sRecommendationsValue(iteration-1) = powerOpt;
         fprintf('%10i | %8.2f | %8.2f |%8.2f | %8.2f |%8.2f | %8.4f  | %12.4f |  \n',iteration, varBO.sYaw(1, iteration), varBO.sYaw(2, iteration), varBO.sYaw(3, iteration), exp(hyp.gp.cov(1)),exp(hyp.gp.cov(2)), exp(hyp.gp.cov(3)), exp(hyp.gp.lik))

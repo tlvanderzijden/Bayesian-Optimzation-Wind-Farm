@@ -1,11 +1,10 @@
 clear all; 
 clc; 
-addpath(genpath('.\Tools')); 
-
+addpath(genpath('..\Tools')); 
 
 %dir = startupTools(); 
 varBO.nYawInput = 2; 
-nInputs = 30;
+nInputs = 10;
 nInitialPoints = 2; %number of initial (random/greedy) points
 nTurbines = 3; 
 nYawInput = 2; 
@@ -27,15 +26,11 @@ OptimizationFunction = @(x)(BraninFunction(x));
     % Define subModels
     subModels = model_definition('deflectionModel',      'rans', 'velocityDeficitModel', 'selfSimilar', 'wakeCombinationModel', 'quadraticRotorVelocity', 'addedTurbulenceModel', 'crespoHernandez');   
 
-%% Initialize Arduino
-if strcmp(typeOfTest, 'FLORIS')
-    
-end
 
 %%
 for i = 1:nInputs
     if strcmp(typeOfTest, 'FLORIS')
-        [varBO] = functionSOWFA_test2(varBO); 
+        [varBO] = functionSOWFA_test1(varBO); 
         florisRunner.controlSet.yawAngleIFArray = deg2rad(varBO.sYaw(:,i))';
         florisRunner = floris(layout, controlSet, subModels);
         florisRunner.run
