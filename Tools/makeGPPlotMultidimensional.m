@@ -42,7 +42,7 @@ if nargin > 5
 end
 view([20,25]); %viewpoint specification
 else % plot contour
-    subplot(1,2,1)
+    subplot(1,2,1) %plot mean
     contourf(x1Mesh, x2Mesh,mPost);  
     hold on
     %s = scatter(xm(:,1), xm(:,2), 'filled'); 
@@ -52,7 +52,7 @@ else % plot contour
     %set(s, 'LinedWidth', 1, 'FaceColor', [ 1 1 1] , 'MarkerEdgeColor', [ 0 0 0 ]); 
     axis([x1Mesh(1,1), x1Mesh(1,end), x2Mesh(1,1), x2Mesh(end,1)]); 
     colorbar
-    subplot(1,2,2)
+    subplot(1,2,2) % plot variance
     contourf(x1Mesh, x2Mesh,sPost);  
     hold on; 
     scatter(xm(:,1), xm(:,2),100, 'MarkerEdgeColor',[0 0 0],...
